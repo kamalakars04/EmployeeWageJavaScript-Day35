@@ -23,85 +23,52 @@ function GetWorkingHours(empCheck)
     }
 }
 
-empWage=empHrs*WAGE_PER_HOUR;
-console.log("UC4 Total Hrs: "+empHrs+" Employee Wage: "+empWage);
-
+// UC 8 store hours and wages in map
 // To get working hours of each day
-let dailyWages = [];
+let dailyWagesMap = new Map();
+let dailyWorkingHoursMap = new Map();
 const MAX_HRS_IN_MONTH=100;
 let dailyEmpHours = 0;
 let totalEmpHrs=0;
 let totalWorkingDays=0;
+let dailyWage = 0;
+let totalWage = 0;
 while(totalEmpHrs <= MAX_HRS_IN_MONTH && totalWorkingDays < NO_OF_WORKING_DAYS)
 {
     totalWorkingDays++;
+
+    // Get the working hours
     empCheck=Math.floor(Math.random()*10)%3;
     dailyEmpHours = GetWorkingHours(empCheck);
+
+    // Store them in a map
+    dailyWorkingHoursMap.set(totalWorkingDays,dailyEmpHours);
+
+    // Get daily wage and store in map
+    dailyWage = dailyEmpHours*WAGE_PER_HOUR;
+    dailyWagesMap.set(totalWorkingDays,dailyWage);
+
+    // Calculate total emp hours and total wage
     totalEmpHrs += dailyEmpHours;
-    dailyWages.push(dailyEmpHours*WAGE_PER_HOUR);
-
+    totalWage += dailyWage;
 }
-empWage=totalEmpHrs*WAGE_PER_HOUR;
-console.log("UC5 Total No of Days: "+totalWorkingDays+" Total Hrs Worked: "+totalEmpHrs+ "Total Employee Wage: "+empWage);
+console.log("Total emp hrs : "+ totalEmpHrs);
 
-// UC6 Store Daily Wage
-dailyWages.forEach(p=> console.log("UC6 DailyWage on day is "+ p));
+// UC 9a
+// Calculate total hours worked using map
+let totalEmpHrsFromMap = Array.from(dailyWorkingHoursMap.values()).reduce(((totalEmphrs,dailyEmpHours)=>{totalEmphrs += dailyEmpHours; return totalEmphrs;}),0);
+console.log("UC 9a Total emp hrs are : "+totalEmpHrsFromMap);
 
-// UC7 Perform Array operations on daily wage array
-// a.Calculate total wage using foreach or reduce
-function CalculateTotalWage(dailywage, totalWage)
-{
-    return totalWage += dailywage;
-}
-let totalWage = 0;
-dailyWages.forEach(p => totalWage += p);
-console.log("UC7 Total Wage USing Foreach is "+totalWage);
-totalWage = 0;
-totalWage = dailyWages.reduce(CalculateTotalWage);
-console.log("UC7 Total Wage USing Reduce is "+totalWage);
+// Calculate total wage using map
+let totalWageFromMap = Array.from(dailyWagesMap.values()).reduce(((totalWage,dailyWage)=>{return totalWage+dailyWage;}),0);
+console.log("UC 9a Total emp wage are : "+totalWageFromMap);
 
-// b.Show Day along with wage using map function
-let cnt=0;
-function CreatedailyWageMap(dailywage)
-{
-    cnt++
-    return "Daily Wage Of day "+cnt+" is "+dailywage;
-}
-let dailyWageMap = dailyWages.map(CreatedailyWageMap);
-dailyWageMap.forEach(p=> console.log("UC 7B "+p));
+// UC 9b 
+// Show the full working days
+let fullTimeWorkingDays = [...dailyWorkingHoursMap.keys()].filter(p => dailyWorkingHoursMap.get(p) == FULL_TIME_HOURS);
+let partTimeWorkingDays = [...dailyWorkingHoursMap.keys()].filter(p => dailyWorkingHoursMap.get(p) == PART_TIME_HOURS);
+let absentDays = [...dailyWorkingHoursMap.keys()].filter(p => dailyWorkingHoursMap.get(p) == 0);
 
-// UC 7C Show Days of Full time daily wage 160 is earned
-console.log("UC 7C");
-let fullDayWage = dailyWageMap.filter(p=> p.includes("160"));
-fullDayWage.forEach(p => console.log("UC 7C "+p));
-
-// UC 7D Find first occurence of fulltime wage
-console.log("UC 7D "+dailyWageMap.find(p => p.includes("160")));
-
-// UC 7E Check if Every element of full time wage is correct
-console.log("UC 7E Does all elements of FullDaywage have correct elements : "+fullDayWage.every(p => p.includes(160)));
-
-// UC 7F Check if there is any part time wage
-console.log("UC 7F Is there any part time wage : "+ dailyWageMap.some(p => p.includes("60")));
-
-// UC 7G Find the no of days employee worked
-function NoOfDaysWorked(total, dailyWage)
-{
-    if(dailyWage > 0)
-        return total+1;
-    return total;
-}
-let totalDaysWorked = dailyWages.reduce(NoOfDaysWorked,0);
-console.log("UC 7G Total no of days worked : "+totalDaysWorked);
-
-// UC 8 Create Map to store daily wage
-let dailyWageDayMap = new Map();
-let day = 0;
-for(const element of dailyWages)
-{
-    day++;
-    dailyWageDayMap.set(day,element);
-}
-for([key,value] of dailyWageDayMap) 
-console.log("UC 8 The wage of day "+key+" is "+value);
-console.log("UC 8 Total Wage through Map is "+Array.from(dailyWageDayMap.values()).reduce(CalculateTotalWage));
+console.log("9b Full time working days are : "+fullTimeWorkingDays);
+console.log("9b part time working days are : "+partTimeWorkingDays);
+console.log("9b absent days are : "+absentDays);
