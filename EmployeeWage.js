@@ -83,8 +83,62 @@ for(let dayNo=0;dayNo<NO_OF_WORKING_DAYS;dayNo++)
         wageEarned : (dailyWagesMap.get(dayNo+1)),
         hoursWorked : (dailyWorkingHoursMap.get(dayNo+1)),
         toString(){
-            return 'On day '+this.day+' => Wage earned : '+this.wageEarned+' hours Worked : '+this.hoursWorked
+            return '\nOn day '+this.day+' => Wage earned : '+this.wageEarned+' hours Worked : '+this.hoursWorked
         },
     });
 }
-empWageDetailsArray.forEach(p => console.log(p.toString()));
+console.log("\nUC 10 showing daily hours worked and wage using object "+empWageDetailsArray);
+
+// UC 11
+// Calculate total wage and total emp hours using object
+let totalEmpHrsFromObject = empWageDetailsArray.reduce((totalHrs,details)=>{return totalHrs+details.hoursWorked;},0);
+
+let totalWageFromObject = empWageDetailsArray.reduce((totalHrs,details)=>{return totalHrs+details.wageEarned;},0);
+
+console.log("\n\nUC 11A Total Hours: " +totalEmpHrsFromObject+" Total Wage is : "+totalWageFromObject); 
+
+// 11B show full time and part time seperately
+console.log("\nUC 11B Logging Full Work Days");
+empWageDetailsArray.filter(empWageDetailsArray => empWageDetailsArray.hoursWorked == FULL_TIME_HOURS) 
+                .forEach(empWageDetailsArray =>console.log(empWageDetailsArray.toString())); 
+
+// UC 11c shpw part time working hours
+let partWorkingDayStrArr = empWageDetailsArray 
+                .filter(empWageDetailsArray => empWageDetailsArray.hoursWorked == PART_TIME_HOURS) 
+                .map(p => p); 
+
+console.log("\nUC 11C PartWorkingDayStrings: "+ partWorkingDayStrArr); 
+
+let nonWorkingDayNums = empWageDetailsArray 
+                .filter(empWageDetailsArray => empWageDetailsArray.hoursWorked == 0) 
+                .map(empWageDetailsArray => empWageDetailsArray.day); 
+
+console.log("\nUC 11D NonWorkingDayNums: "+nonWorkingDayNums);
+
+// Create employee payroll data object
+class EmployeePayroll
+{
+    // Properties
+    id;
+    salary;
+
+    constructor(id,name,salary)
+    {
+        this.id = id;
+        this.name = name;
+        this.salary = salary;
+    }
+
+    get name(){return this._name;}
+    set name(name){console.log("in set name"); this._name = name;}
+
+    toString()
+    {
+        return "Id : "+this.id+" Name : "+this.name+" Salary : "+this.salary;
+    }
+} 
+
+// Create instances of class
+let employee = new EmployeePayroll(20,"Rao",50000);
+console.log("id : "+employee.id+" name : "+employee.name);
+console.log(employee.toString());
